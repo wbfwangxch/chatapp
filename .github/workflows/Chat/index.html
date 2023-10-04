@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Application</title>
+    <script>
+        var socket;
+
+        function init() {
+            socket = new WebSocket('ws://localhost:8080'); // 替换为您的WebSocket服务器地址
+
+            socket.onopen = function() {
+                console.log('连接已建立');
+            };
+
+            socket.onmessage = function(event) {
+                var message = event.data;
+                appendMessage(message);
+            };
+        }
+
+        function sendMessage() {
+            var input = document.getElementById('messageInput');
+            var message = input.value;
+
+            if (message.trim() !== '') {
+                socket.send(message);
+                input.value = '';
+                appendMessage('我: ' + message);
+            }
+        }
+
+        function appendMessage(message) {
+            var chatBox = document.getElementById('chatBox');
+            var p = document.createElement('p');
+            p.textContent = message;
+            chatBox.appendChild(p);
+        }
+
+    </script>
+</head>
+<body onload="init()">
+    <div id="chatBox"></div>
+    <input type="text" id="messageInput">
+    <button onclick="sendMessage()">发送</button>
+</body>
+</html>
